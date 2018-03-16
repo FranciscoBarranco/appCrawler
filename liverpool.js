@@ -1,81 +1,47 @@
-var express = require("express"),
-    app = express(),
-    bodyParser  = require("body-parser"),
-    methodOverride = require("method-override"),
-    mongoose = require('mongoose'),
+var mongoose = require('mongoose'),
 	cheerio = require('cheerio'),
 	http = require('http'),
     fns = require('./functions.js'),
-    catalogProds = require('./controllers/actions'),
-    port = 3000;
+    port = 8000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(methodOverride());
-
-mongoose.connect('mongodb://localhost/catalogs', function(err, res){
-    if(err){
-        console.log('¡Error de conexión!', err);
-    }
-    app.listen(port, function() {
-        console.log("Node server running on http://localhost:"+port);
-        });
+var server=http.createServer(function(req,res){
+    res.end('test');
 });
 
-var catalogs = express.Router();
+server.on('listening',function(){
+    console.log('¡Servidor corriendo!');
+});
 
-catalogs.route('/catalogs')
-    .get(catalogProds.findAll)
-    .post(catalogProds.addProduct);
+server.listen(port);
 
-catalogs.route('/catalogs/:id')
-    .get(catalogProds.findById)
-    .put(catalogProds.updateProduct)
-    .delete(catalogProds.deleteProduct);
-// router.get('/', function(req, res) {
-//     res.send("Hello World!");
-// });
-
-app.use('/api', catalogs);
-
-// var server=http.createServer(function(req,res){
-//     res.end('test');
-// });
-
-// server.on('listening',function(){
-//     console.log('¡Servidor corriendo!');
-// });
-
-// server.listen(port);
-
-// mongoose.connect('mongodb://localhost/larva');
-// var db = mongoose.connection;
+mongoose.connect('mongodb://localhost/larva');
+var db = mongoose.connection;
  
-// db.on('error', function (err) {
-// 	console.log('¡Error de conexión!', err);
-// });
-// db.once('open', function () {
-// 	console.log('¡Conectado!');
-// });
+db.on('error', function (err) {
+	console.log('¡Error de conexión!', err);
+});
+db.once('open', function () {
+	console.log('¡Conectado!');
+});
 
-// var catalogoSchema = new mongoose.Schema({
-// 	store: String,
-// 	producto: [{
-// 		breadcrumb: String,
-// 		name: String,
-// 		image: String,
-// 		sku: String, 
-// 		details: [{
-// 			description: String,
-// 			priceList: Number,
-// 			promoPercent: Number,
-// 			promoPrice: Number,
-// 			available: String,
-// 			posibleStock: Number,
-// 			date: Date
-// 		}]
-// 	}]
-// }, { usePushEach: true });
+var catalogoSchema = new mongoose.Schema({
+	store: String,
+	producto: [{
+		breadcrumb: String,
+		name: String,
+		image: String,
+		sku: String, 
+		details: [{
+			description: String,
+			priceList: Number,
+			promoPercent: Number,
+			promoPrice: Number,
+			available: String,
+			posibleStock: Number,
+			date: Date
+		}]
+	}]
+}, { usePushEach: true });
 
 //db.dropDatabase(); // Para borrar la DB
 
