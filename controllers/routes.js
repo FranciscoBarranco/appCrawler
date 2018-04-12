@@ -1,5 +1,18 @@
 var mongoose = require('mongoose'),
+    routes = require('../models/catalogs'),
     Catalogs = mongoose.model('Catalogs');
+
+catalogsRoute.route('/catalogs')
+    .get(Catalogs.findAll)
+    .post(Catalogs.addProduct);
+
+catalogsRoute.route('/catalogs/:id')
+    .get(Catalogs.findById)
+    .put(Catalogs.updateProduct)
+    .delete(Catalogs.deleteProduct);
+// router.get('/', function(req, res) {
+//     res.send("Hello World!");
+// });
 
 // Obtener todos los elementos
 exports.findAll = function(req, res){

@@ -3,7 +3,7 @@ var express = require("express"),
     bodyParser  = require("body-parser"),
     methodOverride = require("method-override"),
     mongoose = require('mongoose'),
-    catalogProds = require('./controllers/actions'),
+    routes = require('./controllers/routes'),
     port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -12,20 +12,6 @@ app.use(methodOverride());
 
 var catalogsRoute = express.Router();
 
-catalogsRoute.route('/catalogs')
-    .get(catalogProds.findAll)
-    .post(catalogProds.addProduct);
-
-catalogsRoute.route('/catalogs/:id')
-    .get(catalogProds.findById)
-    .put(catalogProds.updateProduct)
-    .delete(catalogProds.deleteProduct);
-// router.get('/', function(req, res) {
-//     res.send("Hello World!");
-// });
-
-app.use('/api', catalogsRoute);
-    
 mongoose.connect('mongodb://localhost/catalogs', function(err, res){
     if(err){
         console.log('¡Error de conexión!', err);
@@ -34,3 +20,5 @@ mongoose.connect('mongodb://localhost/catalogs', function(err, res){
         console.log("Node server running on http://localhost:"+port);
         });
 });
+
+app.use('/api', catalogsRoute);

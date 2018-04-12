@@ -1,47 +1,54 @@
-var mongoose = require('mongoose'),
+var MongoClient = require('mongodb').MongoClient,
 	cheerio = require('cheerio'),
 	http = require('http'),
     fns = require('./functions.js'),
     port = 8000;
 
-var server=http.createServer(function(req,res){
-    res.end('test');
+// var server=http.createServer(function(req,res){
+//     res.end('test');
+// });
+
+// server.on('listening',function(){
+//     console.log('¡Servidor corriendo!');
+// });
+
+// server.listen(port);
+
+// Connect to the db
+MongoClient.connect("mongodb://localhost:27017/larva", function(err, db) {
+    if (err) throw err;
+    console.log("Database created!");
+    db.close();
 });
 
-server.on('listening',function(){
-    console.log('¡Servidor corriendo!');
-});
-
-server.listen(port);
-
-mongoose.connect('mongodb://localhost/larva');
-var db = mongoose.connection;
+// mongoose.connect('mongodb://localhost/larva');
+// var db = mongoose.connection;
  
-db.on('error', function (err) {
-	console.log('¡Error de conexión!', err);
-});
-db.once('open', function () {
-	console.log('¡Conectado!');
-});
+// db.on('error', function (err) {
+// 	console.log('¡Error de conexión!', err);
+// });
+// db.once('open', function () {
+// 	console.log('¡Conectado!');
+// });
 
-var catalogoSchema = new mongoose.Schema({
-	store: String,
-	producto: [{
-		breadcrumb: String,
-		name: String,
-		image: String,
-		sku: String, 
-		details: [{
-			description: String,
-			priceList: Number,
-			promoPercent: Number,
-			promoPrice: Number,
-			available: String,
-			posibleStock: Number,
-			date: Date
-		}]
-	}]
-}, { usePushEach: true });
+// var catalogoSchema = new mongoose.Schema({
+// 	store: String,
+// 	producto: [{
+// 		breadcrumb: String,
+// 		name: String,
+// 		image: String,
+// 		sku: String, 
+// 		details: [{
+// 			description: String,
+// 			priceList: Number,
+// 			promoPercent: Number,
+// 			promoPrice: Number,
+// 			available: String,
+// 			posibleStock: Number,
+// 			date: Date
+// 		}]
+// 	}]
+// }, { usePushEach: true });
 
 //db.dropDatabase(); // Para borrar la DB
 
@@ -66,54 +73,54 @@ var detallesProducto = function(uri){
             arrJson.push(jsonImage[x])
         }
         
-        var catalogo = mongoose.model('catalogo', catalogoSchema);
+        // var catalogo = mongoose.model('catalogo', catalogoSchema);
 
-        catalogo.findOne({'producto.sku':$('#prodId').val()}, (error, item) => {
-            if(error){
-                console.log(error);
-            }
-            if(item){
-                item.producto[0].details.push({
-                    date: new Date,
-                    priceList: $('#requiredlistprice').val(),
-                    promoPrice: $('#requiredpromoprice').val(),
-                    available: $('#stockThresholdEnabled').val(),
-                    posibleStock:$('#numRecords').val()
-                });
-                item.save(function(err, data){
-                    if(err){
-                        console.log(err);
-                    }else{
-                        return;
-                    }
-                })
-            }else{
-                console.log(uri);
-                var nuevaCarga = new catalogo({
-                    store: 'Liverpool',
-                    producto: [{
-                        name: $('#productName h1').text(),
-                        breadcrumb: arrBread,
-                        image: arrJson[0],
-                        sku: $('#prodId').val(), 
-                        details: [{
-                            date: new Date,
-                            priceList: $('#requiredlistprice').val(),
-                            promoPrice: $('#requiredpromoprice').val(),
-                            available: $('#stockThresholdEnabled').val(),
-                            posibleStock:$('#numRecords').val()
-                        }]
-                    }]
-                });
-                nuevaCarga.save(function (err, data) {
-                    if(err){
-                        console.log(err);
-                    }else{
-                        return;
-                    }
-                });
-            }
-        });
+        // catalogo.findOne({'producto.sku':$('#prodId').val()}, (error, item) => {
+        //     if(error){
+        //         console.log(error);
+        //     }
+        //     if(item){
+        //         item.producto[0].details.push({
+        //             date: new Date,
+        //             priceList: $('#requiredlistprice').val(),
+        //             promoPrice: $('#requiredpromoprice').val(),
+        //             available: $('#stockThresholdEnabled').val(),
+        //             posibleStock:$('#numRecords').val()
+        //         });
+        //         item.save(function(err, data){
+        //             if(err){
+        //                 console.log(err);
+        //             }else{
+        //                 return;
+        //             }
+        //         })
+        //     }else{
+        //         console.log(uri);
+        //         var nuevaCarga = new catalogo({
+        //             store: 'Liverpool',
+        //             producto: [{
+        //                 name: $('#productName h1').text(),
+        //                 breadcrumb: arrBread,
+        //                 image: arrJson[0],
+        //                 sku: $('#prodId').val(), 
+        //                 details: [{
+        //                     date: new Date,
+        //                     priceList: $('#requiredlistprice').val(),
+        //                     promoPrice: $('#requiredpromoprice').val(),
+        //                     available: $('#stockThresholdEnabled').val(),
+        //                     posibleStock:$('#numRecords').val()
+        //                 }]
+        //             }]
+        //         });
+        //         nuevaCarga.save(function (err, data) {
+        //             if(err){
+        //                 console.log(err);
+        //             }else{
+        //                 return;
+        //             }
+        //         });
+        //     }
+        // });
         //Fin Editable
     });
 };
