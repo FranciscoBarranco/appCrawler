@@ -133,7 +133,7 @@ var detallesProducto = function(uri){
                     }
                 });
             }
-    });
+        });
         // console.log(nuevaCarga.producto[0].details);
         //Fin Editable
     });

@@ -1,7 +1,8 @@
 var mongoose = require('mongoose'),
     routes = require('../models/catalogs'),
-    Catalogs = mongoose.model('Catalogs');
-
+    Catalogs = mongoose.model('Catalogs'),
+    catalogsRoute = express.Router();
+    
 catalogsRoute.route('/catalogs')
     .get(Catalogs.findAll)
     .post(Catalogs.addProduct);
